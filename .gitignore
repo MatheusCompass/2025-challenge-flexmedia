@@ -1,0 +1,21 @@
+# Segredos — NUNCA commitar
+.env
+
+# Build outputs
+backend/target/
+frontend-totem/dist/
+frontend-admin/dist/
+
+# Node
+node_modules/
+frontend-totem/node_modules/
+frontend-admin/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

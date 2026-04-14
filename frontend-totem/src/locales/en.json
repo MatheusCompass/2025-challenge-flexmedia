@@ -1,0 +1,62 @@
+{
+  "tituloApp": "CheckIn Hub",
+  "telaInicial": {
+    "boasVindas": "Welcome",
+    "instrucao": "Touch the screen to start",
+    "btnCheckin": "Check-in",
+    "btnCheckout": "Check-out"
+  },
+  "selecionarIdioma": {
+    "titulo": "Select your language",
+    "pt": "Português",
+    "en": "English",
+    "es": "Español"
+  },
+  "buscarReserva": {
+    "titulo": "Identification",
+    "labelCodigo": "Reservation code",
+    "labelCpf": "CPF / ID",
+    "placeholder": "Enter your code or ID",
+    "btnBuscar": "Search",
+    "erro": "Reservation not found. Please check your details and try again."
+  },
+  "confirmarDados": {
+    "titulo": "Confirm your details",
+    "nome": "Name",
+    "quarto": "Room",
+    "dataCheckin": "Check-in",
+    "dataCheckout": "Check-out",
+    "btnConfirmar": "Confirm and continue",
+    "btnVoltar": "Back"
+  },
+  "reconhecimentoFacial": {
+    "titulo": "Identity verification",
+    "instrucao": "Position your face in the center of the camera",
+    "processando": "Verifying...",
+    "sucesso": "Identity confirmed!",
+    "btnManual": "Manual validation"
+  },
+  "emitirChave": {
+    "titulo": "Your key is ready!",
+    "instrucao": "Use the QR Code below to access your room",
+    "quarto": "Room",
+    "btnConcluir": "Complete check-in"
+  },
+  "checkout": {
+    "titulo": "Check-out",
+    "instrucao": "Confirm your details below to check out",
+    "btnConfirmar": "Confirm check-out",
+    "sucesso": "Check-out completed successfully!"
+  },
+  "obrigado": {
+    "titulo": "Thank you for your stay!",
+    "instrucao": "We hope to see you again soon.",
+    "voltando": "Returning to home screen in"
+  },
+  "geral": {
+    "carregando": "Loading...",
+    "erro": "An error occurred. Please try again.",
+    "btnVoltar": "Back",
+    "btnCancelar": "Cancel"
+  }
+}

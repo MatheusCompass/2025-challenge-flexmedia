@@ -1,0 +1,62 @@
+{
+  "tituloApp": "CheckIn Hub",
+  "telaInicial": {
+    "boasVindas": "Bem-vindo",
+    "instrucao": "Toque na tela para iniciar",
+    "btnCheckin": "Fazer Check-in",
+    "btnCheckout": "Fazer Check-out"
+  },
+  "selecionarIdioma": {
+    "titulo": "Selecione seu idioma",
+    "pt": "Português",
+    "en": "English",
+    "es": "Español"
+  },
+  "buscarReserva": {
+    "titulo": "Identificação",
+    "labelCodigo": "Código de reserva",
+    "labelCpf": "CPF",
+    "placeholder": "Digite seu código ou CPF",
+    "btnBuscar": "Buscar",
+    "erro": "Reserva não encontrada. Verifique os dados e tente novamente."
+  },
+  "confirmarDados": {
+    "titulo": "Confirme seus dados",
+    "nome": "Nome",
+    "quarto": "Quarto",
+    "dataCheckin": "Check-in",
+    "dataCheckout": "Check-out",
+    "btnConfirmar": "Confirmar e continuar",
+    "btnVoltar": "Voltar"
+  },
+  "reconhecimentoFacial": {
+    "titulo": "Verificação de identidade",
+    "instrucao": "Posicione seu rosto no centro da câmera",
+    "processando": "Verificando...",
+    "sucesso": "Identidade confirmada!",
+    "btnManual": "Validar manualmente"
+  },
+  "emitirChave": {
+    "titulo": "Sua chave está pronta!",
+    "instrucao": "Use o QR Code abaixo para acessar seu quarto",
+    "quarto": "Quarto",
+    "btnConcluir": "Concluir check-in"
+  },
+  "checkout": {
+    "titulo": "Check-out",
+    "instrucao": "Confirme os dados abaixo para realizar o check-out",
+    "btnConfirmar": "Confirmar check-out",
+    "sucesso": "Check-out realizado com sucesso!"
+  },
+  "obrigado": {
+    "titulo": "Obrigado pela sua estadia!",
+    "instrucao": "Esperamos vê-lo novamente em breve.",
+    "voltando": "Voltando à tela inicial em"
+  },
+  "geral": {
+    "carregando": "Carregando...",
+    "erro": "Ocorreu um erro. Tente novamente.",
+    "btnVoltar": "Voltar",
+    "btnCancelar": "Cancelar"
+  }
+}
