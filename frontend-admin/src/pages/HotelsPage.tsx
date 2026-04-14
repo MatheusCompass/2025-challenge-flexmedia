@@ -51,8 +51,9 @@ export default function HotelsPage() {
       }
       setModalAberto(false)
       await carregar()
-    } catch {
-      setErro('Erro ao salvar. Verifique os dados.')
+    } catch (e: unknown) {
+      const data = (e as { response?: { data?: { detail?: string; message?: string } } })?.response?.data
+      setErro(data?.detail ?? data?.message ?? 'Erro ao salvar. Verifique os dados.')
     } finally {
       setSalvando(false)
     }

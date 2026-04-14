@@ -121,8 +121,8 @@ export default function ReservationsPage() {
       setModalAberto(false)
       await carregar(0, busca, statusFiltro)
     } catch (e: unknown) {
-      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message
-      setErro(msg ?? 'Erro ao cadastrar reserva.')
+      const data = (e as { response?: { data?: { detail?: string; message?: string } } })?.response?.data
+      setErro(data?.detail ?? data?.message ?? 'Erro ao cadastrar reserva.')
     } finally {
       setSalvando(false)
     }
