@@ -99,8 +99,8 @@ Esta é a forma **recomendada** para rodar o sistema completo.
 
 ```bash
 # 1. Clone o repositório
-git clone <url-do-repositorio>
-cd "GRUPO XX 3ESOR - 2025_CHALLENGE_FLEXMEDIA_2025-2"
+git clone https://github.com/MatheusCompass/2025-challenge-flexmedia.git
+cd 2025-challenge-flexmedia
 
 # 2. Suba todos os serviços (Oracle, Redis, backend, totem, admin)
 docker compose up --build -d
