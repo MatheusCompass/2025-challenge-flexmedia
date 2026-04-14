@@ -225,17 +225,17 @@ Fluxo de Check-out (acessado pela tela Idle):
 
 Acesse [http://localhost:5174](http://localhost:5174) e faça login com um usuário administrador.
 
-### Criando o primeiro usuário admin
+### Usuário admin padrão
 
-Insira diretamente no banco (ou via endpoint de seed que pode ser adicionado):
+O backend cria automaticamente um usuário administrador na **primeira inicialização** (via `DataLoader`). Não é necessário nenhuma inserção manual.
 
-```sql
-INSERT INTO usuario (id, nome, email, senha, role, ativo)
-VALUES (1, 'Admin', 'admin@checkinhub.com',
-        -- senha: admin123 (BCrypt)
-        '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lHHy',
-        'ADMIN', 1);
-```
+| Campo | Valor |
+|---|---|
+| E-mail | `admin@flexmedia.com` |
+| Senha | `admin123` |
+| Perfil | `ADMIN` |
+
+> **Importante:** Altere a senha em produção. O `DataLoader` só cria o usuário se ele ainda não existir.
 
 ### Funcionalidades do painel
 
@@ -245,15 +245,19 @@ VALUES (1, 'Admin', 'admin@checkinhub.com',
 | **Hotéis** | Cadastro e desativação de hotéis (suporte multi-tenant) |
 | **Reservas** | Listagem com filtro por status (CONFIRMADA, CHECKIN\_REALIZADO, CHECKOUT\_REALIZADO, CANCELADA) |
 | **Conteúdo** | Gerenciamento de banners e mensagens exibidos no totem em modo idle |
+| **Usuários** | Cadastro e desativação de usuários admin/operador (somente ADMIN) |
 
 ---
 
 ## API — Principais Endpoints
 
-### Autenticação
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | [/api/auth/login](http://localhost:8080/api/auth/login) | Retorna JWT token |
+### Autenticação e Usuários
+| Método | Endpoint | Acesso | Descrição |
+|---|---|---|---|
+| `POST` | [/api/auth/login](http://localhost:8080/api/auth/login) | Público | Retorna JWT token |
+| `POST` | [/api/auth/register](http://localhost:8080/api/auth/register) | ADMIN | Cadastra novo usuário admin/operador |
+| `GET` | [/api/auth/usuarios](http://localhost:8080/api/auth/usuarios) | ADMIN | Lista todos os usuários |
+| `DELETE` | [/api/auth/usuarios/{id}](http://localhost:8080/api/auth/usuarios/1) | ADMIN | Desativa usuário (soft delete) |
 
 ### Check-in (público — sem autenticação)
 | Método | Endpoint | Descrição |
