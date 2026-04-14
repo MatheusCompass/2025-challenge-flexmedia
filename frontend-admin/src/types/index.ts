@@ -44,6 +44,7 @@ export interface Usuario {
   email: string
   role: 'ADMIN' | 'OPERADOR'
   hotelId: number | null
+  ativo: boolean
 }
 
 export interface AuthResponse {

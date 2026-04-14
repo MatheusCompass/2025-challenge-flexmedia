@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { to: '/hoteis', label: 'Hotéis', icon: '🏨' },
   { to: '/reservas', label: 'Reservas', icon: '📋' },
   { to: '/conteudo', label: 'Conteúdo Totem', icon: '🖼️' },
+  { to: '/usuarios', label: 'Usuários', icon: '👥' },
 ]
 
 export default function Layout() {

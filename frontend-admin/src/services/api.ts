@@ -66,4 +66,13 @@ export const conteudoService = {
   remover: (id: number) => api.delete(`/conteudo/${id}`),
 }
 
+export const usuarioService = {
+  listar: () =>
+    api.get('/auth/usuarios').then(r => r.data),
+  cadastrar: (data: { nome: string; email: string; senha: string; role: string; hotelId?: number | null }) =>
+    api.post('/auth/register', data).then(r => r.data),
+  desativar: (id: number) =>
+    api.delete(`/auth/usuarios/${id}`).then(r => r.data),
+}
+
 export default api
