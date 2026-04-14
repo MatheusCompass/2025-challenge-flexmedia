@@ -6,6 +6,19 @@ const EMPTY: Hotel = {
   id: 0, nome: '', cnpj: '', cidade: '', estado: '', ativo: true, createdAt: '',
 }
 
+function formatarCnpj(valor: string) {
+  const digits = valor.replace(/\D/g, '').slice(0, 14)
+  return digits
+    .replace(/^(\d{2})(\d)/, '$1.$2')
+    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+    .replace(/\.(\d{3})(\d)/, '.$1/$2')
+    .replace(/(\d{4})(\d)/, '$1-$2')
+}
+
+function cnpjValido(cnpj: string) {
+  return /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(cnpj)
+}
+
 export default function HotelsPage() {
   const [hoteis, setHoteis] = useState<Hotel[]>([])
   const [carregando, setCarregando] = useState(true)
@@ -41,6 +54,23 @@ export default function HotelsPage() {
   }
 
   async function salvar() {
+    if (!form.nome?.trim() || !form.cidade?.trim()) {
+      setErro('Preencha nome e cidade.')
+      return
+    }
+
+    if (!cnpjValido(form.cnpj ?? '')) {
+      setErro('CNPJ inválido. Use o formato 00.000.000/0000-00.')
+      return
+    }
+
+    const uf = (form.estado ?? '').trim().toUpperCase()
+    if (!/^[A-Z]{2}$/.test(uf)) {
+      setErro('UF inválida. Use 2 letras (ex.: SP).')
+      return
+    }
+
+    setForm(p => ({ ...p, estado: uf }))
     setSalvando(true)
     setErro(null)
     try {
@@ -140,7 +170,19 @@ export default function HotelsPage() {
                   <label className="block text-xs text-slate-400 mb-1 capitalize">{field}</label>
                   <input
                     value={(form[field] as string) ?? ''}
-                    onChange={e => setForm(p => ({ ...p, [field]: e.target.value }))}
+                    onChange={e => {
+                      const valor = e.target.value
+                      if (field === 'cnpj') {
+                        setForm(p => ({ ...p, cnpj: formatarCnpj(valor) }))
+                        return
+                      }
+                      if (field === 'estado') {
+                        setForm(p => ({ ...p, estado: valor.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2) }))
+                        return
+                      }
+                      setForm(p => ({ ...p, [field]: valor }))
+                    }}
+                    maxLength={field === 'estado' ? 2 : undefined}
                     className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
                   />
                 </div>

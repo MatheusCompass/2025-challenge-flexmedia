@@ -41,6 +41,14 @@ const EMPTY_FORM = (hotelId: number): ReservaForm => ({
   dataCheckout: today,
 })
 
+function formatarCpf(valor: string) {
+  const digits = valor.replace(/\D/g, '').slice(0, 11)
+  return digits
+    .replace(/^(\d{3})(\d)/, '$1.$2')
+    .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+    .replace(/\.(\d{3})(\d)/, '.$1-$2')
+}
+
 export default function ReservationsPage() {
   const { usuario } = useAuth()
   const isAdmin = usuario?.role === 'ADMIN'
@@ -111,6 +119,32 @@ export default function ReservationsPage() {
   async function salvarReserva() {
     if (!form.codigoReserva || !form.hospedeNome || !form.hospedeCpf || !form.quartoNumero) {
       setErro('Preencha os campos obrigatórios.')
+      return
+    }
+
+    const cpfDigits = form.hospedeCpf.replace(/\D/g, '')
+    if (cpfDigits.length !== 11) {
+      setErro('CPF inválido. Informe 11 dígitos.')
+      return
+    }
+
+    if (form.hospedeEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.hospedeEmail)) {
+      setErro('E-mail inválido.')
+      return
+    }
+
+    if (!form.dataCheckin || !form.dataCheckout) {
+      setErro('Informe check-in e check-out.')
+      return
+    }
+
+    if (form.dataCheckout < form.dataCheckin) {
+      setErro('Check-out deve ser maior ou igual ao check-in.')
+      return
+    }
+
+    if (!form.hotelId) {
+      setErro('Selecione um hotel.')
       return
     }
 
@@ -251,7 +285,7 @@ export default function ReservationsPage() {
                 <label className="block text-xs text-slate-400 mb-1">CPF *</label>
                 <input
                   value={form.hospedeCpf}
-                  onChange={e => setForm(p => ({ ...p, hospedeCpf: e.target.value }))}
+                  onChange={e => setForm(p => ({ ...p, hospedeCpf: formatarCpf(e.target.value) }))}
                   className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
                 />
               </div>
