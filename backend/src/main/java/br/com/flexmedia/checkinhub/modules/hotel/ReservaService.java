@@ -1,17 +1,49 @@
 package br.com.flexmedia.checkinhub.modules.hotel;
 
 import br.com.flexmedia.checkinhub.common.exception.ResourceNotFoundException;
+import br.com.flexmedia.checkinhub.common.exception.BusinessException;
+import br.com.flexmedia.checkinhub.modules.hotel.dto.ReservaRequestDTO;
 import br.com.flexmedia.checkinhub.modules.hotel.dto.ReservaResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ReservaService {
 
     private final ReservaRepository reservaRepository;
+    private final HotelRepository hotelRepository;
+
+    @Transactional
+    public ReservaResponseDTO criar(ReservaRequestDTO dto) {
+        if (reservaRepository.findByCodigoReserva(dto.codigoReserva()).isPresent()) {
+            throw new BusinessException("Código de reserva já cadastrado: " + dto.codigoReserva());
+        }
+
+        if (dto.dataCheckout().isBefore(dto.dataCheckin())) {
+            throw new BusinessException("Data de checkout deve ser maior ou igual ao check-in.");
+        }
+
+        Hotel hotel = hotelRepository.findById(dto.hotelId())
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado: " + dto.hotelId()));
+
+        Reserva reserva = Reserva.builder()
+                .codigoReserva(dto.codigoReserva())
+                .hospedeNome(dto.hospedeNome())
+                .hospedeCpf(dto.hospedeCpf())
+                .hospedeEmail(dto.hospedeEmail())
+                .quartoNumero(dto.quartoNumero())
+                .hotel(hotel)
+                .dataCheckin(dto.dataCheckin())
+                .dataCheckout(dto.dataCheckout())
+                .status(StatusReserva.CONFIRMADA)
+                .build();
+
+        return ReservaResponseDTO.from(reservaRepository.save(reserva));
+    }
 
     public Page<ReservaResponseDTO> listar(Long hotelId, String busca, Pageable pageable) {
         if (hotelId != null) {

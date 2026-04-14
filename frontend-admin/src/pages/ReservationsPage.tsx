@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Reserva } from '../types'
-import { reservaService } from '../services/api'
+import { hotelService, reservaService } from '../services/api'
+import { useAuth } from '../context/AuthContext'
 
 const STATUS_LABEL: Record<Reserva['status'], string> = {
   CONFIRMADA: 'Confirmada',
@@ -16,13 +17,56 @@ const STATUS_COR: Record<Reserva['status'], string> = {
   CANCELADA: 'bg-red-500/20 text-red-400',
 }
 
+interface ReservaForm {
+  codigoReserva: string
+  hospedeNome: string
+  hospedeCpf: string
+  hospedeEmail: string
+  quartoNumero: string
+  hotelId: number
+  dataCheckin: string
+  dataCheckout: string
+}
+
+const today = new Date().toISOString().slice(0, 10)
+
+const EMPTY_FORM = (hotelId: number): ReservaForm => ({
+  codigoReserva: '',
+  hospedeNome: '',
+  hospedeCpf: '',
+  hospedeEmail: '',
+  quartoNumero: '',
+  hotelId,
+  dataCheckin: today,
+  dataCheckout: today,
+})
+
 export default function ReservationsPage() {
+  const { usuario } = useAuth()
+  const isAdmin = usuario?.role === 'ADMIN'
+
   const [reservas, setReservas] = useState<Reserva[]>([])
   const [busca, setBusca] = useState('')
   const [statusFiltro, setStatusFiltro] = useState<Reserva['status'] | ''>('')
   const [carregando, setCarregando] = useState(true)
   const [pagina, setPagina] = useState(0)
   const [totalPaginas, setTotalPaginas] = useState(1)
+  const [hoteis, setHoteis] = useState<{ id: number; nome: string }[]>([])
+  const [modalAberto, setModalAberto] = useState(false)
+  const [salvando, setSalvando] = useState(false)
+  const [erro, setErro] = useState<string | null>(null)
+  const [form, setForm] = useState<ReservaForm>(() => EMPTY_FORM(usuario?.hotelId ?? 1))
+
+  useEffect(() => {
+    hotelService.listar(0, 100)
+      .then(data => {
+        const lista = data.content ?? data
+        setHoteis(lista)
+        const hotelInicial = usuario?.hotelId ?? lista[0]?.id ?? 1
+        setForm(EMPTY_FORM(hotelInicial))
+      })
+      .catch(() => {})
+  }, [usuario?.hotelId])
 
   async function carregar(p = 0, q = '', status = '') {
     setCarregando(true)
@@ -57,9 +101,44 @@ export default function ReservationsPage() {
   const formatarData = (iso: string) =>
     new Date(iso).toLocaleDateString('pt-BR')
 
+  function abrirNovo() {
+    const hotelPadrao = usuario?.hotelId ?? hoteis[0]?.id ?? 1
+    setForm(EMPTY_FORM(hotelPadrao))
+    setErro(null)
+    setModalAberto(true)
+  }
+
+  async function salvarReserva() {
+    if (!form.codigoReserva || !form.hospedeNome || !form.hospedeCpf || !form.quartoNumero) {
+      setErro('Preencha os campos obrigatórios.')
+      return
+    }
+
+    setSalvando(true)
+    setErro(null)
+    try {
+      await reservaService.criar(form)
+      setModalAberto(false)
+      await carregar(0, busca, statusFiltro)
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message
+      setErro(msg ?? 'Erro ao cadastrar reserva.')
+    } finally {
+      setSalvando(false)
+    }
+  }
+
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-bold mb-6">Reservas</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold">Reservas</h2>
+        <button
+          onClick={abrirNovo}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          + Nova reserva
+        </button>
+      </div>
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-3 mb-6">
@@ -145,6 +224,114 @@ export default function ReservationsPage() {
             </div>
           )}
         </>
+      )}
+
+      {modalAberto && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 w-full max-w-md shadow-2xl">
+            <h3 className="text-lg font-bold mb-6">Nova reserva</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Código da reserva *</label>
+                <input
+                  value={form.codigoReserva}
+                  onChange={e => setForm(p => ({ ...p, codigoReserva: e.target.value }))}
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Nome do hóspede *</label>
+                <input
+                  value={form.hospedeNome}
+                  onChange={e => setForm(p => ({ ...p, hospedeNome: e.target.value }))}
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">CPF *</label>
+                <input
+                  value={form.hospedeCpf}
+                  onChange={e => setForm(p => ({ ...p, hospedeCpf: e.target.value }))}
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">E-mail</label>
+                <input
+                  type="email"
+                  value={form.hospedeEmail}
+                  onChange={e => setForm(p => ({ ...p, hospedeEmail: e.target.value }))}
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Quarto *</label>
+                <input
+                  value={form.quartoNumero}
+                  onChange={e => setForm(p => ({ ...p, quartoNumero: e.target.value }))}
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                />
+              </div>
+              {isAdmin ? (
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Hotel *</label>
+                  <select
+                    value={form.hotelId}
+                    onChange={e => setForm(p => ({ ...p, hotelId: Number(e.target.value) }))}
+                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                  >
+                    {hoteis.map(h => (
+                      <option key={h.id} value={h.id}>{h.nome}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Hotel</label>
+                  <p className="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-slate-300">
+                    {hoteis.find(h => h.id === form.hotelId)?.nome ?? `Hotel #${form.hotelId}`}
+                  </p>
+                </div>
+              )}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Check-in *</label>
+                  <input
+                    type="date"
+                    value={form.dataCheckin}
+                    onChange={e => setForm(p => ({ ...p, dataCheckin: e.target.value }))}
+                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Check-out *</label>
+                  <input
+                    type="date"
+                    value={form.dataCheckout}
+                    onChange={e => setForm(p => ({ ...p, dataCheckout: e.target.value }))}
+                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+            {erro && <p className="mt-4 text-sm text-red-400">{erro}</p>}
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setModalAberto(false)}
+                className="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={salvarReserva}
+                disabled={salvando}
+                className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors"
+              >
+                {salvando ? 'Salvando...' : 'Cadastrar'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

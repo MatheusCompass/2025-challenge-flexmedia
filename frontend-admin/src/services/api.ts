@@ -49,6 +49,7 @@ export const reservaService = {
   listar: (params?: Record<string, unknown>) =>
     api.get('/reservas', { params }).then(r => r.data),
   buscarPorId: (id: number) => api.get(`/reservas/${id}`).then(r => r.data),
+  criar: (data: unknown) => api.post('/reservas', data).then(r => r.data),
 }
 
 export const metricasService = {
