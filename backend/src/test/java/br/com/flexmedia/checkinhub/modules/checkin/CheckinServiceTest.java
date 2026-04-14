@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -81,5 +82,24 @@ class CheckinServiceTest {
         var result = checkinService.buscarParaCheckin("RES-001");
 
         assertThat(result.codigoReserva()).isEqualTo("RES-001");
+    }
+
+    @Test
+    void buscarParaCheckin_quandoCpfSemMascara_retornaReserva() {
+        Reserva reserva = reservaFixture(StatusReserva.CONFIRMADA);
+        when(reservaService.buscarPorCodigo(anyString())).thenThrow(new RuntimeException("nao encontrado"));
+        when(reservaRepository.findByHospedeCpfAndStatus("12345678900", StatusReserva.CONFIRMADA))
+                .thenReturn(java.util.Optional.of(reserva));
+
+        var result = checkinService.buscarParaCheckin("12345678900");
+
+        assertThat(result.codigoReserva()).isEqualTo("RES-001");
+    }
+
+    @Test
+    void buscarParaCheckin_quandoEntradaVazia_lancaBusinessException() {
+        assertThatThrownBy(() -> checkinService.buscarParaCheckin("   "))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Código/CPF não informado");
     }
 }

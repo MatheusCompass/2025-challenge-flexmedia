@@ -183,8 +183,13 @@ export default function HotelsPage() {
                       setForm(p => ({ ...p, [field]: valor }))
                     }}
                     maxLength={field === 'estado' ? 2 : undefined}
+                    placeholder={field === 'cnpj' ? '00.000.000/0000-00' : undefined}
+                    inputMode={field === 'cnpj' ? 'numeric' : undefined}
                     className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
                   />
+                  {field === 'cnpj' && (
+                    <p className="mt-1 text-xs text-slate-500">Formato: 00.000.000/0000-00</p>
+                  )}
                 </div>
               ))}
             </div>

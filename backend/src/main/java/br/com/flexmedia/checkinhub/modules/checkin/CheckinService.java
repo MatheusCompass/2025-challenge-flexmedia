@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CheckinService {
@@ -20,15 +23,45 @@ public class CheckinService {
     private final MetricasService metricasService;
 
     public ReservaResponseDTO buscarParaCheckin(String codigoOuCpf) {
-        // Tenta por código primeiro, depois por CPF
-        try {
-            return reservaService.buscarPorCodigo(codigoOuCpf);
-        } catch (Exception e) {
-            Reserva r = reservaRepository
-                    .findByHospedeCpfAndStatus(codigoOuCpf, StatusReserva.CONFIRMADA)
-                    .orElseThrow(() -> new BusinessException("Reserva não encontrada para: " + codigoOuCpf));
-            return ReservaResponseDTO.from(r);
+        String entrada = codigoOuCpf == null ? "" : codigoOuCpf.trim();
+        if (entrada.isBlank()) {
+            throw new BusinessException("Código/CPF não informado.");
         }
+
+        // Tenta por código primeiro, depois por CPF (com e sem máscara)
+        try {
+            return reservaService.buscarPorCodigo(entrada);
+        } catch (Exception e) {
+            for (String candidatoCpf : gerarCandidatosCpf(entrada)) {
+                var reserva = reservaRepository.findByHospedeCpfAndStatus(candidatoCpf, StatusReserva.CONFIRMADA);
+                if (reserva.isPresent()) {
+                    return ReservaResponseDTO.from(reserva.get());
+                }
+            }
+            throw new BusinessException("Reserva não encontrada para: " + entrada);
+        }
+    }
+
+    private List<String> gerarCandidatosCpf(String valor) {
+        List<String> candidatos = new ArrayList<>();
+        candidatos.add(valor);
+
+        String digits = valor.replaceAll("\\D", "");
+        if (!digits.isEmpty()) {
+            candidatos.add(digits);
+            if (digits.length() == 11) {
+                candidatos.add(formatarCpf(digits));
+            }
+        }
+
+        return candidatos.stream().distinct().toList();
+    }
+
+    private String formatarCpf(String digits) {
+        return digits.substring(0, 3) + "."
+                + digits.substring(3, 6) + "."
+                + digits.substring(6, 9) + "-"
+                + digits.substring(9, 11);
     }
 
     @Transactional

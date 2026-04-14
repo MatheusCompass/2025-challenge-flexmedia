@@ -2,13 +2,13 @@ import axios from 'axios'
 import type { Reserva, ChaveEmitida } from '../types'
 
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: '/api',
   timeout: 10000,
 })
 
 export const checkinService = {
-  buscarReserva: (codigo: string): Promise<Reserva> =>
-    api.post('/checkin/buscar-reserva', { codigo }).then(r => r.data),
+  buscarReserva: (codigoOuCpf: string): Promise<Reserva> =>
+    api.get(`/checkin/reserva/${encodeURIComponent(codigoOuCpf)}`).then(r => r.data),
 
   confirmar: (reservaId: string): Promise<void> =>
     api.post('/checkin/confirmar', { reservaId }).then(r => r.data),

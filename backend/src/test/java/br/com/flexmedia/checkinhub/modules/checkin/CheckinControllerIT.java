@@ -72,6 +72,24 @@ class CheckinControllerIT {
                 .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    void buscar_porCpfComMascara_retorna200ComDadosDaReserva() throws Exception {
+        salvarReserva("RES-IT-CPF-001", "123.456.789-00", StatusReserva.CONFIRMADA);
+
+        mockMvc.perform(get("/api/checkin/reserva/123.456.789-00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigoReserva").value("RES-IT-CPF-001"));
+    }
+
+    @Test
+    void buscar_porCpfSemMascara_retorna200ComDadosDaReserva() throws Exception {
+        salvarReserva("RES-IT-CPF-002", "123.456.789-01", StatusReserva.CONFIRMADA);
+
+        mockMvc.perform(get("/api/checkin/reserva/12345678901"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigoReserva").value("RES-IT-CPF-002"));
+    }
+
     // ── Confirmação de check-in ───────────────────────────────────────────────
 
     @Test

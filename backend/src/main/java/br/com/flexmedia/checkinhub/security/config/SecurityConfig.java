@@ -21,6 +21,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.core.annotation.Order;
 
 @Configuration
 @EnableWebSecurity
@@ -36,20 +38,32 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(1)
+    public SecurityFilterChain actuatorFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher(new AntPathRequestMatcher("/actuator/**"))
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // Endpoints públicos do totem
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/checkin/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/checkin/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/checkout/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/checkout/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/chaves/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/conteudo").permitAll()
-                .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/checkin/**", HttpMethod.GET.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/checkin/**", HttpMethod.POST.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/checkout/**", HttpMethod.GET.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/checkout/**", HttpMethod.POST.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/chaves/**", HttpMethod.POST.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/conteudo", HttpMethod.GET.name())).permitAll()
                 // Demais endpoints exigem autenticação
                 .anyRequest().authenticated()
             )

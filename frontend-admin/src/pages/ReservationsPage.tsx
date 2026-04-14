@@ -212,6 +212,7 @@ export default function ReservationsPage() {
                 <tr className="border-b border-slate-700 text-slate-400 text-left">
                   <th className="px-6 py-3 font-medium">Código</th>
                   <th className="px-6 py-3 font-medium">Hóspede</th>
+                  <th className="px-6 py-3 font-medium">CPF</th>
                   <th className="px-6 py-3 font-medium">Quarto</th>
                   <th className="px-6 py-3 font-medium">Check-in</th>
                   <th className="px-6 py-3 font-medium">Check-out</th>
@@ -223,6 +224,7 @@ export default function ReservationsPage() {
                   <tr key={r.id} className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors">
                     <td className="px-6 py-4 font-mono text-xs text-slate-400">{r.codigoReserva}</td>
                     <td className="px-6 py-4 font-medium">{r.hospedeNome}</td>
+                    <td className="px-6 py-4 font-mono text-sm text-slate-300">{formatarCpf(r.hospedeCpf)}</td>
                     <td className="px-6 py-4 text-slate-400">{r.quartoNumero}</td>
                     <td className="px-6 py-4 text-slate-400">{formatarData(r.dataCheckin)}</td>
                     <td className="px-6 py-4 text-slate-400">{formatarData(r.dataCheckout)}</td>
@@ -286,8 +288,11 @@ export default function ReservationsPage() {
                 <input
                   value={form.hospedeCpf}
                   onChange={e => setForm(p => ({ ...p, hospedeCpf: formatarCpf(e.target.value) }))}
+                  placeholder="000.000.000-00"
+                  inputMode="numeric"
                   className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
                 />
+                <p className="mt-1 text-xs text-slate-500">Formato: 000.000.000-00</p>
               </div>
               <div>
                 <label className="block text-xs text-slate-400 mb-1">E-mail</label>
