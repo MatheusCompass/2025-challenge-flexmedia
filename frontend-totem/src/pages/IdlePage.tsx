@@ -33,20 +33,20 @@ export default function IdlePage() {
 
   return (
     <div
-      className="flex flex-col items-center justify-between h-screen w-screen bg-slate-900 text-white p-12 cursor-pointer select-none"
+      className="flex flex-col items-center justify-between h-screen w-screen bg-slate-900 text-white p-6 lg:p-12 cursor-pointer select-none"
       onClick={() => navigate('/selecionar-idioma')}
     >
       {/* Header */}
-      <div className="flex flex-col items-center gap-4 mt-16">
-        <h1 className="text-7xl font-bold tracking-tight text-white">CheckIn Hub</h1>
-        <p className="text-2xl text-slate-400">Bem-vindo · Welcome · Bienvenido</p>
+      <div className="flex flex-col items-center gap-4 mt-8 lg:mt-16">
+        <h1 className="text-4xl lg:text-7xl font-bold tracking-tight text-white">CheckIn Hub</h1>
+        <p className="text-lg lg:text-2xl text-slate-400">Bem-vindo · Welcome · Bienvenido</p>
       </div>
 
       {/* Instrução central */}
       <div className="flex flex-col items-center gap-6">
         <div className="w-32 h-1 bg-blue-500 rounded-full animate-pulse" />
-        <p className="text-3xl text-slate-300 font-light">Toque para iniciar · Touch to start · Toque para comenzar</p>
-        <div className="flex gap-6 mt-6 text-5xl">
+        <p className="text-xl lg:text-3xl text-slate-300 font-light">Toque para iniciar · Touch to start · Toque para comenzar</p>
+        <div className="flex gap-6 mt-6 text-3xl lg:text-5xl">
           <span>🇧🇷</span>
           <span>🇺🇸</span>
           <span>🇪🇸</span>

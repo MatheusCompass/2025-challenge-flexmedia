@@ -90,8 +90,8 @@ export default function ContentPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">Conteúdo do Totem</h2>
           {isAdmin && hoteis.length > 0 && (
@@ -169,8 +169,8 @@ export default function ContentPage() {
 
       {/* Modal */}
       {modalAberto && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8 w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
             <h3 className="text-lg font-bold mb-6">{form.id ? 'Editar conteúdo' : 'Novo conteúdo'}</h3>
             <div className="space-y-4">
               <div>

@@ -180,7 +180,7 @@ cd backend
 mvn test
 ```
 
-**Suíte atual: 52 testes — 0 falhas**
+**Suíte atual: 52 testes — 0 falhas** *(testes de integração usam H2 em memória)*
 
 | Classe | Tipo | Testes |
 |---|---|---|
@@ -205,19 +205,29 @@ Os testes de integração usam **H2 em memória** — não precisam de Oracle ne
 O totem funciona em **modo kiosk fullscreen** e guia o hóspede pelas seguintes telas:
 
 ```
+Fluxo de Check-in:
 1. Tela Idle          → exibe promoções / instruções; toque inicia o fluxo
 2. Seleção de Idioma  → Português · English · Español
 3. Buscar Reserva     → por código de reserva ou CPF
 4. Confirmar Dados    → hóspede revisa nome, quarto e datas
+                        ⚠ Validação de status: bloqueia com mensagem explicativa
+                          se o status não permite check-in (ex: já realizado,
+                          cancelada, checkout encerrado)
 5. Reconhecimento     → câmera valida identidade (MediaStream API)
-6. Emissão de Chave   → QR Code / token digital exibido na tela
+                        ✓ Confirma o check-in via API ao validar
+                          (status muda de CONFIRMADA → CHECKIN_REALIZADO)
+6. Emissão de Chave   → QR Code / token digital emitido e exibido na tela
 7. Obrigado / Saída   → retorna ao idle após timer configurável
 
 Fluxo de Check-out (acessado pela tela Idle):
 1. Buscar Reserva     → por código ou CPF
-2. Confirmar Checkout → chaves digitais são invalidadas
-3. Obrigado           → retorna ao idle
+2. Confirmar Dados    → valida status; exige CHECKIN_REALIZADO
+3. Reconhecimento     → câmera valida identidade
+4. Confirmar Checkout → chaves digitais são invalidadas
+5. Obrigado           → retorna ao idle
 ```
+
+> **Busca por CPF ou código:** o totem aceita tanto o código de reserva (`RES-2025-XXXXXX`) quanto o CPF formatado (`000.000.000-00`) como entrada de pesquisa.
 
 ---
 
@@ -246,6 +256,8 @@ O backend cria automaticamente um usuário administrador na **primeira inicializ
 | **Reservas** | Listagem com filtro por status (CONFIRMADA, CHECKIN\_REALIZADO, CHECKOUT\_REALIZADO, CANCELADA) |
 | **Conteúdo** | Gerenciamento de banners e mensagens exibidos no totem em modo idle |
 | **Usuários** | Cadastro e desativação de usuários admin/operador (somente ADMIN) |
+
+> Todas as páginas do painel administrativo e do totem são **totalmente responsivas** (mobile, tablet e desktop).
 
 ---
 
@@ -378,7 +390,7 @@ CORS_ORIGINS=http://localhost:5173,http://localhost:5174
 |---|---|
 | Backend | Java 17 · Spring Boot 3.4 · Spring Security · JPA/Hibernate |
 | Autenticação | JWT (jjwt 0.12) |
-| Frontend | React 18 · Vite · TypeScript · TailwindCSS v4 |
+| Frontend | React 19 · Vite · TypeScript · TailwindCSS v4 |
 | Gráficos (admin) | Recharts |
 | Banco de Dados | Oracle Database 21c XE |
 | Cache | Redis 7 |

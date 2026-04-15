@@ -28,12 +28,19 @@ public class CheckinService {
             throw new BusinessException("Código/CPF não informado.");
         }
 
-        // Tenta por código primeiro, depois por CPF (com e sem máscara)
+        // Tenta por código primeiro (qualquer status), depois por CPF (com e sem máscara)
         try {
             return reservaService.buscarPorCodigo(entrada);
         } catch (Exception e) {
+            // Retorna reserva de qualquer status — o frontend decide o que exibir
+            List<StatusReserva> todosStatus = List.of(
+                    StatusReserva.CONFIRMADA,
+                    StatusReserva.CHECKIN_REALIZADO,
+                    StatusReserva.CHECKOUT_REALIZADO,
+                    StatusReserva.CANCELADA
+            );
             for (String candidatoCpf : gerarCandidatosCpf(entrada)) {
-                var reserva = reservaRepository.findByHospedeCpfAndStatus(candidatoCpf, StatusReserva.CONFIRMADA);
+                var reserva = reservaRepository.findFirstByCpfAndStatusIn(candidatoCpf, todosStatus);
                 if (reserva.isPresent()) {
                     return ReservaResponseDTO.from(reserva.get());
                 }

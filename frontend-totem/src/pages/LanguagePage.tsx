@@ -25,22 +25,22 @@ export default function LanguagePage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-900 text-white gap-12">
+    <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-900 text-white gap-6 md:gap-12">
       {etapa === 'idioma' ? (
         <>
-          <h2 className="text-5xl font-bold text-center leading-tight">
+          <h2 className="text-3xl md:text-5xl font-bold text-center leading-tight">
             Selecione seu idioma<br />
-            <span className="text-3xl text-slate-400">Select your language</span><br />
-            <span className="text-3xl text-slate-400">Seleccione su idioma</span>
+            <span className="text-xl md:text-3xl text-slate-400">Select your language</span><br />
+            <span className="text-xl md:text-3xl text-slate-400">Seleccione su idioma</span>
           </h2>
-          <div className="flex gap-8">
+          <div className="flex flex-wrap gap-4 md:gap-8 justify-center">
             {IDIOMAS.map(({ code, label, flag }) => (
               <button
                 key={code}
                 onClick={() => selecionarIdioma(code)}
-                className="flex flex-col items-center gap-4 px-16 py-10 bg-slate-800 hover:bg-blue-700 rounded-3xl text-3xl font-semibold transition-colors active:scale-95"
+                className="flex flex-col items-center gap-4 px-8 py-6 md:px-16 md:py-10 bg-slate-800 hover:bg-blue-700 rounded-3xl text-xl md:text-3xl font-semibold transition-colors active:scale-95"
               >
-                <span className="text-6xl">{flag}</span>
+                <span className="text-4xl md:text-6xl">{flag}</span>
                 {label}
               </button>
             ))}
@@ -48,18 +48,18 @@ export default function LanguagePage() {
         </>
       ) : (
         <>
-          <h2 className="text-5xl font-bold">{t.telaInicial.boasVindas}</h2>
-          <p className="text-2xl text-slate-400">{t.telaInicial.instrucao}</p>
-          <div className="flex gap-8">
+          <h2 className="text-3xl md:text-5xl font-bold">{t.telaInicial.boasVindas}</h2>
+          <p className="text-lg md:text-2xl text-slate-400">{t.telaInicial.instrucao}</p>
+          <div className="flex flex-wrap gap-4 md:gap-8 justify-center">
             <button
               onClick={() => selecionarFluxo('checkin')}
-              className="px-16 py-10 bg-blue-600 hover:bg-blue-500 text-white text-3xl font-semibold rounded-3xl transition-colors active:scale-95"
+              className="px-8 py-6 md:px-16 md:py-10 bg-blue-600 hover:bg-blue-500 text-white text-xl md:text-3xl font-semibold rounded-3xl transition-colors active:scale-95"
             >
               {t.telaInicial.btnCheckin}
             </button>
             <button
               onClick={() => selecionarFluxo('checkout')}
-              className="px-16 py-10 bg-slate-700 hover:bg-slate-600 text-white text-3xl font-semibold rounded-3xl transition-colors active:scale-95"
+              className="px-8 py-6 md:px-16 md:py-10 bg-slate-700 hover:bg-slate-600 text-white text-xl md:text-3xl font-semibold rounded-3xl transition-colors active:scale-95"
             >
               {t.telaInicial.btnCheckout}
             </button>
@@ -71,7 +71,7 @@ export default function LanguagePage() {
           if (etapa === 'acao') setEtapa('idioma')
           else navigate('/')
         }}
-        className="text-slate-500 text-xl hover:text-slate-300 mt-4"
+        className="text-slate-500 text-base md:text-xl hover:text-slate-300 mt-4"
       >
         {t.geral.btnCancelar}
       </button>

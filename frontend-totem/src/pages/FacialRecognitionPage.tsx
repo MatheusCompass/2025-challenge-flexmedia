@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTotem } from '../context/TotemContext'
+import { checkinService } from '../services/api'
 
 export default function FacialRecognitionPage() {
   const navigate = useNavigate()
-  const { t, fluxo } = useTotem()
+  const { t, fluxo, reserva } = useTotem()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [status, setStatus] = useState<'aguardando' | 'processando' | 'sucesso'>('aguardando')
   const [cameraAtiva, setCameraAtiva] = useState(false)
@@ -24,7 +25,14 @@ export default function FacialRecognitionPage() {
           setStatus('processando')
           setTimeout(() => {
             setStatus('sucesso')
-            setTimeout(() => {
+            setTimeout(async () => {
+              if (fluxo === 'checkin' && reserva?.id) {
+                try {
+                  await checkinService.confirmar(reserva.id)
+                } catch {
+                  // continua mesmo se falhar (status já pode estar CHECKIN_REALIZADO)
+                }
+              }
               const proxima = fluxo === 'checkout' ? '/checkout' : '/emitir-chave'
               navigate(proxima)
             }, 1500)
@@ -55,17 +63,24 @@ export default function FacialRecognitionPage() {
     sucesso: 'border-green-400',
   }
 
-  function validarManualmente() {
+  async function validarManualmente() {
+    if (fluxo === 'checkin' && reserva?.id) {
+      try {
+        await checkinService.confirmar(reserva.id)
+      } catch {
+        // continua mesmo se falhar
+      }
+    }
     const proxima = fluxo === 'checkout' ? '/checkout' : '/emitir-chave'
     navigate(proxima)
   }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-900 text-white gap-8">
-      <h2 className="text-5xl font-bold">{t.reconhecimentoFacial.titulo}</h2>
+      <h2 className="text-3xl md:text-5xl font-bold">{t.reconhecimentoFacial.titulo}</h2>
 
       {/* Visor da câmera */}
-      <div className={`relative w-80 h-80 rounded-full overflow-hidden border-4 ${statusCor[status]} transition-colors duration-500`}>
+      <div className={`relative w-56 h-56 md:w-80 md:h-80 rounded-full overflow-hidden border-4 ${statusCor[status]} transition-colors duration-500`}>
         {cameraAtiva ? (
           <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover scale-x-[-1]" />
         ) : (
@@ -80,13 +95,13 @@ export default function FacialRecognitionPage() {
         )}
       </div>
 
-      <p className="text-2xl text-slate-300 text-center px-16">{statusTexto[status]}</p>
+      <p className="text-lg md:text-2xl text-slate-300 text-center px-6 md:px-16">{statusTexto[status]}</p>
 
       {/* Botão de fallback manual */}
       {status === 'aguardando' && (
         <button
           onClick={validarManualmente}
-          className="mt-4 px-10 py-4 bg-slate-700 hover:bg-slate-600 text-white text-xl rounded-2xl transition-colors active:scale-95"
+          className="mt-4 px-6 py-3 md:px-10 md:py-4 bg-slate-700 hover:bg-slate-600 text-white text-base md:text-xl rounded-2xl transition-colors active:scale-95"
         >
           {t.reconhecimentoFacial.btnManual}
         </button>

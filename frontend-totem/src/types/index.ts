@@ -5,6 +5,7 @@ export type StatusReserva = 'CONFIRMADA' | 'CHECKIN_REALIZADO' | 'CHECKOUT_REALI
 export type TipoChave = 'DIGITAL' | 'RFID'
 
 export interface Reserva {
+  id: number
   codigoReserva: string
   hospedeNome: string
   hospedeCpf: string

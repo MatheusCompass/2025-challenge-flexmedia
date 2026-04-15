@@ -53,6 +53,13 @@
     "instrucao": "We hope to see you again soon.",
     "voltando": "Returning to home screen in"
   },
+  "statusBloqueio": {
+    "checkinJaRealizado": "Check-in has already been completed for this reservation. To access your room again, use the Check-out option or contact the front desk.",
+    "estadiaEncerrada": "This stay has already ended. Check-in is not available.",
+    "reservaCancelada": "This reservation is cancelled. Check-in and check-out are not available.",
+    "checkinPendente": "Check-in has not been completed yet for this reservation. Please use the Check-in option first.",
+    "checkoutJaRealizado": "Check-out has already been completed for this reservation."
+  },
   "geral": {
     "carregando": "Loading...",
     "erro": "An error occurred. Please try again.",

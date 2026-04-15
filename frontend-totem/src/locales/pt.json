@@ -53,6 +53,13 @@
     "instrucao": "Esperamos vê-lo novamente em breve.",
     "voltando": "Voltando à tela inicial em"
   },
+  "statusBloqueio": {
+    "checkinJaRealizado": "Check-in já realizado para esta reserva. Para acessar seu quarto novamente, utilize a opção de Check-out ou procure a recepção.",
+    "estadiaEncerrada": "Esta estadia já foi encerrada. Não é possível realizar check-in.",
+    "reservaCancelada": "Esta reserva está cancelada. Não é possível realizar check-in ou check-out.",
+    "checkinPendente": "O check-in ainda não foi realizado para esta reserva. Utilize a opção de Check-in primeiro.",
+    "checkoutJaRealizado": "Check-out já realizado anteriormente para esta reserva."
+  },
   "geral": {
     "carregando": "Carregando...",
     "erro": "Ocorreu um erro. Tente novamente.",

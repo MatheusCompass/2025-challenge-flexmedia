@@ -93,8 +93,8 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 md:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
         <h2 className="text-2xl font-bold">Usuários</h2>
         <button
           onClick={abrirNovo}
@@ -114,7 +114,8 @@ export default function UsersPage() {
         <p className="text-slate-500">Carregando...</p>
       ) : (
         <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[650px]">
             <thead>
               <tr className="border-b border-slate-700 text-slate-400 text-left">
                 <th className="px-6 py-3 font-medium">Nome</th>
@@ -176,13 +177,14 @@ export default function UsersPage() {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
       {/* Modal novo usuário */}
       {modalAberto && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8 w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
             <h3 className="text-lg font-bold mb-6">Novo usuário</h3>
             <div className="space-y-4">
               <div>

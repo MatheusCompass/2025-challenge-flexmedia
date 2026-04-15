@@ -52,7 +52,7 @@ export default function DashboardPage() {
   }, [])
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
 
       {carregando && (
@@ -65,7 +65,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-2">
         <StatCard label="Check-ins hoje"  value={dados?.totalCheckinsHoje  ?? 12} cor="border-blue-500/30" />
         <StatCard label="Check-outs hoje" value={dados?.totalCheckoutsHoje ?? 8}  cor="border-green-500/30" />
         <StatCard label="Chaves emitidas" value={dados?.totalChavesHoje    ?? 19} cor="border-cyan-500/30" />
@@ -73,7 +73,7 @@ export default function DashboardPage() {
         <StatCard label="Hoteis ativos"   value={dados?.hoteisAtivos       ?? 3}  cor="border-orange-500/30" />
       </div>
 
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="mt-8 grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl p-6">
           <h3 className="text-base font-semibold mb-4 text-slate-300">Movimentacao - ultimos 7 dias</h3>
           <ResponsiveContainer width="100%" height={240}>
