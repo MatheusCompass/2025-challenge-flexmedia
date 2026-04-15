@@ -254,6 +254,7 @@ export default function ReservationsPage() {
                   <th className="px-6 py-3 font-medium">Quarto</th>
                   <th className="px-6 py-3 font-medium">Check-in</th>
                   <th className="px-6 py-3 font-medium">Check-out</th>
+                  <th className="px-6 py-3 font-medium">Dt. Nascimento</th>
                   <th className="px-6 py-3 font-medium">Status</th>
                   <th className="px-6 py-3 font-medium">Ações</th>
                 </tr>
@@ -267,6 +268,9 @@ export default function ReservationsPage() {
                     <td className="px-6 py-4 text-slate-400">{r.quartoNumero}</td>
                     <td className="px-6 py-4 text-slate-400">{formatarData(r.dataCheckin)}</td>
                     <td className="px-6 py-4 text-slate-400">{formatarData(r.dataCheckout)}</td>
+                    <td className="px-6 py-4 text-slate-400">
+                      {r.hospedeDataNascimento ? formatarData(r.hospedeDataNascimento) : <span className="text-slate-600">—</span>}
+                    </td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COR[r.status]}`}>
                         {STATUS_LABEL[r.status]}
