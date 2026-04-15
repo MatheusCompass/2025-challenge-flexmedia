@@ -213,7 +213,12 @@ Fluxo de Check-in:
                         ⚠ Validação de status: bloqueia com mensagem explicativa
                           se o status não permite check-in (ex: já realizado,
                           cancelada, checkout encerrado)
-5. Reconhecimento     → câmera valida identidade (MediaStream API)
+5. Verificação de Identidade → câmera valida identidade (MediaStream API)
+                        — OU —
+                        data de nascimento digitada no formato nativo do idioma
+                        selecionado (DD/MM/AAAA · MM/DD/YYYY · DD/MM/AAAA)
+                        ✓ A aba de data só é exibida se a reserva tiver
+                          hospede_data_nascimento cadastrado
                         ✓ Confirma o check-in via API ao validar
                           (status muda de CONFIRMADA → CHECKIN_REALIZADO)
 6. Emissão de Chave   → QR Code / token digital emitido e exibido na tela
@@ -222,7 +227,7 @@ Fluxo de Check-in:
 Fluxo de Check-out (acessado pela tela Idle):
 1. Buscar Reserva     → por código ou CPF
 2. Confirmar Dados    → valida status; exige CHECKIN_REALIZADO
-3. Reconhecimento     → câmera valida identidade
+3. Verificação de Identidade → câmera ou data de nascimento (igual ao check-in)
 4. Confirmar Checkout → chaves digitais são invalidadas
 5. Obrigado           → retorna ao idle
 ```
@@ -253,7 +258,7 @@ O backend cria automaticamente um usuário administrador na **primeira inicializ
 |---|---|
 | **Dashboard** | KPIs do dia (check-ins, check-outs, chaves emitidas, ocupação, hotéis ativos) + gráficos históricos (7 dias) |
 | **Hotéis** | Cadastro e desativação de hotéis (suporte multi-tenant) |
-| **Reservas** | Listagem com filtro por status (CONFIRMADA, CHECKIN\_REALIZADO, CHECKOUT\_REALIZADO, CANCELADA) |
+| **Reservas** | Listagem paginada com filtro por status; **criar**, **editar** e **excluir** reservas; coluna de data de nascimento do hóspede exibida na tabela; campo opcional de data de nascimento no formulário (habilita verificação por DOB no totem) |
 | **Conteúdo** | Gerenciamento de banners e mensagens exibidos no totem em modo idle |
 | **Usuários** | Cadastro e desativação de usuários admin/operador (somente ADMIN) |
 
@@ -287,6 +292,16 @@ O backend cria automaticamente um usuário administrador na **primeira inicializ
 | Método | Endpoint | Descrição |
 |---|---|---|
 | `POST` | [/api/chaves/{reservaId}](http://localhost:8080/api/chaves/1) | Emite chave digital — 201 Created |
+
+### Reservas (requer autenticação JWT)
+| Método | Endpoint | Descrição |
+|---|---|---|
+| `GET` | [/api/reservas](http://localhost:8080/api/reservas) | Lista paginada (filtros: `hotelId`, `busca`, `status`) |
+| `GET` | [/api/reservas/{id}](http://localhost:8080/api/reservas/1) | Busca por id |
+| `GET` | [/api/reservas/codigo/{codigo}](http://localhost:8080/api/reservas/codigo/RES-001) | Busca por código |
+| `POST` | [/api/reservas](http://localhost:8080/api/reservas) | Cadastra reserva |
+| `PUT` | [/api/reservas/{id}](http://localhost:8080/api/reservas/1) | Atualiza reserva |
+| `DELETE` | [/api/reservas/{id}](http://localhost:8080/api/reservas/1) | Remove reserva |
 
 ### Hotéis (requer autenticação JWT)
 | Método | Endpoint | Descrição |
