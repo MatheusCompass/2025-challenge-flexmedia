@@ -39,6 +39,7 @@ public class ReservaService {
                 .hotel(hotel)
                 .dataCheckin(dto.dataCheckin())
                 .dataCheckout(dto.dataCheckout())
+                .hospedeDataNascimento(dto.hospedeDataNascimento())
                 .status(StatusReserva.CONFIRMADA)
                 .build();
 

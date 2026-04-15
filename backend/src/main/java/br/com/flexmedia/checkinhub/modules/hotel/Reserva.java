@@ -47,6 +47,9 @@ public class Reserva {
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
+    @Column(name = "hospede_data_nascimento")
+    private LocalDate hospedeDataNascimento;
+
     @NotNull
     @Column(name = "data_checkin", nullable = false)
     private LocalDate dataCheckin;

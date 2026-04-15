@@ -36,6 +36,15 @@
     "sucesso": "Identidade confirmada!",
     "btnManual": "Validar manualmente"
   },
+  "verificacaoIdentidade": {
+    "tituloMetodo": "Como prefere se identificar?",
+    "btnCamera": "Câmera facial",
+    "btnDataNascimento": "Data de nascimento",
+    "labelData": "Informe sua data de nascimento",
+    "btnConfirmar": "Confirmar",
+    "erroDataInvalida": "Data de nascimento incorreta. Verifique e tente novamente.",
+    "erroDataObrigatoria": "Por favor, informe a data de nascimento."
+  },
   "emitirChave": {
     "titulo": "Sua chave está pronta!",
     "instrucao": "Use o QR Code abaixo para acessar seu quarto",

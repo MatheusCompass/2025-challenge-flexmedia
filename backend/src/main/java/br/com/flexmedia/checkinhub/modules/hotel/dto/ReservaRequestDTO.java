@@ -14,6 +14,7 @@ public record ReservaRequestDTO(
         @NotBlank String quartoNumero,
         @NotNull Long hotelId,
         @NotNull LocalDate dataCheckin,
-        @NotNull LocalDate dataCheckout
+        @NotNull LocalDate dataCheckout,
+        LocalDate hospedeDataNascimento
 ) {
 }

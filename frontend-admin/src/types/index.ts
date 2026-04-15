@@ -19,6 +19,7 @@ export interface Reserva {
   dataCheckin: string
   dataCheckout: string
   status: 'CONFIRMADA' | 'CHECKIN_REALIZADO' | 'CHECKOUT_REALIZADO' | 'CANCELADA'
+  hospedeDataNascimento?: string | null
 }
 
 export interface MetricasDia {

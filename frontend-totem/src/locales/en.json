@@ -36,6 +36,15 @@
     "sucesso": "Identity confirmed!",
     "btnManual": "Manual validation"
   },
+  "verificacaoIdentidade": {
+    "tituloMetodo": "How would you like to identify yourself?",
+    "btnCamera": "Facial camera",
+    "btnDataNascimento": "Date of birth",
+    "labelData": "Enter your date of birth",
+    "btnConfirmar": "Confirm",
+    "erroDataInvalida": "Incorrect date of birth. Please check and try again.",
+    "erroDataObrigatoria": "Please enter your date of birth."
+  },
   "emitirChave": {
     "titulo": "Your key is ready!",
     "instrucao": "Use the QR Code below to access your room",

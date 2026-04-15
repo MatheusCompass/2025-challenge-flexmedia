@@ -26,6 +26,7 @@ interface ReservaForm {
   hotelId: number
   dataCheckin: string
   dataCheckout: string
+  hospedeDataNascimento: string
 }
 
 const today = new Date().toISOString().slice(0, 10)
@@ -39,6 +40,7 @@ const EMPTY_FORM = (hotelId: number): ReservaForm => ({
   hotelId,
   dataCheckin: today,
   dataCheckout: today,
+  hospedeDataNascimento: '',
 })
 
 function formatarCpf(valor: string) {
@@ -151,7 +153,8 @@ export default function ReservationsPage() {
     setSalvando(true)
     setErro(null)
     try {
-      await reservaService.criar(form)
+      const payload = { ...form, hospedeDataNascimento: form.hospedeDataNascimento || null }
+      await reservaService.criar(payload)
       setModalAberto(false)
       await carregar(0, busca, statusFiltro)
     } catch (e: unknown) {
@@ -353,6 +356,16 @@ export default function ReservationsPage() {
                     className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Data de nascimento do hóspede</label>
+                <input
+                  type="date"
+                  value={form.hospedeDataNascimento}
+                  onChange={e => setForm(p => ({ ...p, hospedeDataNascimento: e.target.value }))}
+                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm"
+                />
+                <p className="mt-1 text-xs text-slate-500">Opcional. Habilita verificação por data de nascimento no totem.</p>
               </div>
             </div>
             {erro && <p className="mt-4 text-sm text-red-400">{erro}</p>}

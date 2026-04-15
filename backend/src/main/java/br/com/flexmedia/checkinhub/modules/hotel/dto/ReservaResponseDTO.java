@@ -16,14 +16,16 @@ public record ReservaResponseDTO(
         String hotelNome,
         LocalDate dataCheckin,
         LocalDate dataCheckout,
-        StatusReserva status
+        StatusReserva status,
+        LocalDate hospedeDataNascimento
 ) {
     public static ReservaResponseDTO from(Reserva r) {
         return new ReservaResponseDTO(
                 r.getId(), r.getCodigoReserva(), r.getHospedeNome(), r.getHospedeCpf(),
                 r.getHospedeEmail(), r.getQuartoNumero(),
                 r.getHotel().getId(), r.getHotel().getNome(),
-                r.getDataCheckin(), r.getDataCheckout(), r.getStatus()
+                r.getDataCheckin(), r.getDataCheckout(), r.getStatus(),
+                r.getHospedeDataNascimento()
         );
     }
 }

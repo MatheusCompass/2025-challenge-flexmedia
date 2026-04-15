@@ -14,6 +14,7 @@ export interface Reserva {
   dataCheckin: string
   dataCheckout: string
   status: StatusReserva
+  hospedeDataNascimento: string | null
 }
 
 export interface ChaveEmitida {

@@ -36,6 +36,15 @@
     "sucesso": "¡Identidad confirmada!",
     "btnManual": "Validación manual"
   },
+  "verificacaoIdentidade": {
+    "tituloMetodo": "¿Cómo prefiere identificarse?",
+    "btnCamera": "Cámara facial",
+    "btnDataNascimento": "Fecha de nacimiento",
+    "labelData": "Ingrese su fecha de nacimiento",
+    "btnConfirmar": "Confirmar",
+    "erroDataInvalida": "Fecha de nacimiento incorrecta. Verifique e intente nuevamente.",
+    "erroDataObrigatoria": "Por favor, ingrese su fecha de nacimiento."
+  },
   "emitirChave": {
     "titulo": "¡Su llave está lista!",
     "instrucao": "Use el código QR a continuación para acceder a su habitación",
