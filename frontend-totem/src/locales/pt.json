@@ -41,9 +41,11 @@
     "btnCamera": "Câmera facial",
     "btnDataNascimento": "Data de nascimento",
     "labelData": "Informe sua data de nascimento",
+    "formatoData": "DD/MM/AAAA",
     "btnConfirmar": "Confirmar",
     "erroDataInvalida": "Data de nascimento incorreta. Verifique e tente novamente.",
-    "erroDataObrigatoria": "Por favor, informe a data de nascimento."
+    "erroDataObrigatoria": "Por favor, informe a data de nascimento.",
+    "erroFormatoInvalido": "Formato inválido. Use DD/MM/AAAA."
   },
   "emitirChave": {
     "titulo": "Sua chave está pronta!",

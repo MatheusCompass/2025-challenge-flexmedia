@@ -74,4 +74,39 @@ public class ReservaService {
         return reservaRepository.findByCodigoReserva(codigo)
                 .orElseThrow(() -> new ResourceNotFoundException("Reserva não encontrada: " + codigo));
     }
+
+    @Transactional
+    public ReservaResponseDTO atualizar(Long id, ReservaRequestDTO dto) {
+        Reserva reserva = findOrThrow(id);
+
+        if (!reserva.getCodigoReserva().equals(dto.codigoReserva())) {
+            if (reservaRepository.findByCodigoReserva(dto.codigoReserva()).isPresent()) {
+                throw new BusinessException("Código de reserva já cadastrado: " + dto.codigoReserva());
+            }
+        }
+
+        if (dto.dataCheckout().isBefore(dto.dataCheckin())) {
+            throw new BusinessException("Data de checkout deve ser maior ou igual ao check-in.");
+        }
+
+        Hotel hotel = hotelRepository.findById(dto.hotelId())
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado: " + dto.hotelId()));
+
+        reserva.setCodigoReserva(dto.codigoReserva());
+        reserva.setHospedeNome(dto.hospedeNome());
+        reserva.setHospedeCpf(dto.hospedeCpf());
+        reserva.setHospedeEmail(dto.hospedeEmail());
+        reserva.setQuartoNumero(dto.quartoNumero());
+        reserva.setHotel(hotel);
+        reserva.setDataCheckin(dto.dataCheckin());
+        reserva.setDataCheckout(dto.dataCheckout());
+        reserva.setHospedeDataNascimento(dto.hospedeDataNascimento());
+
+        return ReservaResponseDTO.from(reservaRepository.save(reserva));
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        reservaRepository.delete(findOrThrow(id));
+    }
 }

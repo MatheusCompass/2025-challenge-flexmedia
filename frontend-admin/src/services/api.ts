@@ -50,6 +50,8 @@ export const reservaService = {
     api.get('/reservas', { params }).then(r => r.data),
   buscarPorId: (id: number) => api.get(`/reservas/${id}`).then(r => r.data),
   criar: (data: unknown) => api.post('/reservas', data).then(r => r.data),
+  atualizar: (id: number, data: unknown) => api.put(`/reservas/${id}`, data).then(r => r.data),
+  deletar: (id: number) => api.delete(`/reservas/${id}`),
 }
 
 export const metricasService = {

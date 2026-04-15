@@ -41,9 +41,11 @@
     "btnCamera": "Facial camera",
     "btnDataNascimento": "Date of birth",
     "labelData": "Enter your date of birth",
+    "formatoData": "MM/DD/YYYY",
     "btnConfirmar": "Confirm",
     "erroDataInvalida": "Incorrect date of birth. Please check and try again.",
-    "erroDataObrigatoria": "Please enter your date of birth."
+    "erroDataObrigatoria": "Please enter your date of birth.",
+    "erroFormatoInvalido": "Invalid format. Use MM/DD/YYYY."
   },
   "emitirChave": {
     "titulo": "Your key is ready!",

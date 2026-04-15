@@ -66,6 +66,8 @@ export default function ReservationsPage() {
   const [salvando, setSalvando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
   const [form, setForm] = useState<ReservaForm>(() => EMPTY_FORM(usuario?.hotelId ?? 1))
+  const [reservaEditando, setReservaEditando] = useState<Reserva | null>(null)
+  const [deletandoId, setDeletandoId] = useState<number | null>(null)
 
   useEffect(() => {
     hotelService.listar(0, 100)
@@ -113,9 +115,37 @@ export default function ReservationsPage() {
 
   function abrirNovo() {
     const hotelPadrao = usuario?.hotelId ?? hoteis[0]?.id ?? 1
+    setReservaEditando(null)
     setForm(EMPTY_FORM(hotelPadrao))
     setErro(null)
     setModalAberto(true)
+  }
+
+  function abrirEdicao(r: Reserva) {
+    setReservaEditando(r)
+    setForm({
+      codigoReserva: r.codigoReserva,
+      hospedeNome: r.hospedeNome,
+      hospedeCpf: r.hospedeCpf,
+      hospedeEmail: r.hospedeEmail ?? '',
+      quartoNumero: r.quartoNumero,
+      hotelId: r.hotelId,
+      dataCheckin: r.dataCheckin,
+      dataCheckout: r.dataCheckout,
+      hospedeDataNascimento: r.hospedeDataNascimento ?? '',
+    })
+    setErro(null)
+    setModalAberto(true)
+  }
+
+  async function confirmarDelete(id: number) {
+    try {
+      await reservaService.deletar(id)
+      setDeletandoId(null)
+      await carregar(pagina, busca, statusFiltro)
+    } catch {
+      setDeletandoId(null)
+    }
   }
 
   async function salvarReserva() {
@@ -154,7 +184,11 @@ export default function ReservationsPage() {
     setErro(null)
     try {
       const payload = { ...form, hospedeDataNascimento: form.hospedeDataNascimento || null }
-      await reservaService.criar(payload)
+      if (reservaEditando) {
+        await reservaService.atualizar(reservaEditando.id, payload)
+      } else {
+        await reservaService.criar(payload)
+      }
       setModalAberto(false)
       await carregar(0, busca, statusFiltro)
     } catch (e: unknown) {
@@ -221,6 +255,7 @@ export default function ReservationsPage() {
                   <th className="px-6 py-3 font-medium">Check-in</th>
                   <th className="px-6 py-3 font-medium">Check-out</th>
                   <th className="px-6 py-3 font-medium">Status</th>
+                  <th className="px-6 py-3 font-medium">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -236,6 +271,42 @@ export default function ReservationsPage() {
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COR[r.status]}`}>
                         {STATUS_LABEL[r.status]}
                       </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      {deletandoId === r.id ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-red-400 whitespace-nowrap">Excluir?</span>
+                          <button
+                            onClick={() => confirmarDelete(r.id)}
+                            className="px-2 py-1 bg-red-600 hover:bg-red-500 text-white text-xs rounded transition-colors"
+                          >
+                            Sim
+                          </button>
+                          <button
+                            onClick={() => setDeletandoId(null)}
+                            className="px-2 py-1 bg-slate-600 hover:bg-slate-500 text-white text-xs rounded transition-colors"
+                          >
+                            Não
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => abrirEdicao(r)}
+                            className="p-1.5 bg-slate-700 hover:bg-blue-600 text-white rounded transition-colors"
+                            title="Editar"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => setDeletandoId(r.id)}
+                            className="p-1.5 bg-slate-700 hover:bg-red-600 text-white rounded transition-colors"
+                            title="Excluir"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -270,7 +341,7 @@ export default function ReservationsPage() {
       {modalAberto && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8 w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
-            <h3 className="text-lg font-bold mb-6">Nova reserva</h3>
+            <h3 className="text-lg font-bold mb-6">{reservaEditando ? 'Editar reserva' : 'Nova reserva'}</h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-xs text-slate-400 mb-1">Código da reserva *</label>
@@ -381,7 +452,7 @@ export default function ReservationsPage() {
                 disabled={salvando}
                 className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors"
               >
-                {salvando ? 'Salvando...' : 'Cadastrar'}
+                {salvando ? 'Salvando...' : reservaEditando ? 'Salvar' : 'Cadastrar'}
               </button>
             </div>
           </div>

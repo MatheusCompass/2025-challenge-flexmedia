@@ -40,4 +40,15 @@ public class ReservaController {
     public ReservaResponseDTO buscarPorCodigo(@PathVariable String codigo) {
         return reservaService.buscarPorCodigo(codigo);
     }
+
+    @PutMapping("/{id}")
+    public ReservaResponseDTO atualizar(@PathVariable Long id, @Valid @RequestBody ReservaRequestDTO dto) {
+        return reservaService.atualizar(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar(@PathVariable Long id) {
+        reservaService.deletar(id);
+    }
 }

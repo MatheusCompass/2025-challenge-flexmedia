@@ -2,12 +2,33 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTotem } from '../context/TotemContext'
 import { checkinService } from '../services/api'
+import type { Idioma } from '../types'
 
 type Modo = 'camera' | 'dataNascimento'
 
+/** Auto-insere barras: DD/MM/YYYY ou MM/DD/YYYY (mesma máscara, 2/2/4 dígitos) */
+function mascaraData(valor: string): string {
+  const digits = valor.replace(/\D/g, '').slice(0, 8)
+  if (digits.length <= 2) return digits
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`
+}
+
+/** Converte entrada do usuário para ISO YYYY-MM-DD conforme idioma */
+function parsearParaIso(valor: string, idioma: Idioma): string | null {
+  const parts = valor.split('/')
+  if (parts.length !== 3 || parts[2].length !== 4) return null
+  const [a, b, ano] = parts
+  const dia = idioma === 'en' ? b : a
+  const mes = idioma === 'en' ? a : b
+  const d = Number(dia), m = Number(mes), y = Number(ano)
+  if (isNaN(d) || isNaN(m) || isNaN(y) || m < 1 || m > 12 || d < 1 || d > 31) return null
+  return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
+}
+
 export default function FacialRecognitionPage() {
   const navigate = useNavigate()
-  const { t, fluxo, reserva } = useTotem()
+  const { t, idioma, fluxo, reserva } = useTotem()
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
@@ -74,7 +95,12 @@ export default function FacialRecognitionPage() {
       setErroData(t.verificacaoIdentidade.erroDataObrigatoria)
       return
     }
-    if (dataNascimento !== reserva?.hospedeDataNascimento) {
+    const isoDate = parsearParaIso(dataNascimento, idioma)
+    if (!isoDate) {
+      setErroData(t.verificacaoIdentidade.erroFormatoInvalido)
+      return
+    }
+    if (isoDate !== reserva?.hospedeDataNascimento) {
       setErroData(t.verificacaoIdentidade.erroDataInvalida)
       return
     }
@@ -167,10 +193,17 @@ export default function FacialRecognitionPage() {
           <div className="bg-slate-800 rounded-3xl p-6 md:p-8 w-full shadow-xl flex flex-col gap-4">
             <label className="text-slate-400 text-sm md:text-base">{t.verificacaoIdentidade.labelData}</label>
             <input
-              type="date"
+              type="text"
+              inputMode="numeric"
               value={dataNascimento}
-              onChange={e => { setDataNascimento(e.target.value); setErroData(null) }}
-              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white text-lg md:text-xl focus:outline-none focus:border-blue-500 [color-scheme:dark]"
+              onChange={e => {
+                const masked = mascaraData(e.target.value)
+                setDataNascimento(masked)
+                setErroData(null)
+              }}
+              placeholder={t.verificacaoIdentidade.formatoData}
+              maxLength={10}
+              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white text-lg md:text-xl text-center tracking-widest focus:outline-none focus:border-blue-500"
             />
             {erroData && (
               <p className="text-red-400 text-sm md:text-base text-center">{erroData}</p>
